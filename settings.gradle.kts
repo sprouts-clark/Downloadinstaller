@@ -30,3 +30,4 @@ dependencyResolutionManagement {
 rootProject.name = "Appupdater"
 include(":app")
 include(":downloadinstaller")
+include(":modulewepay")

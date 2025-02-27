@@ -3,10 +3,12 @@ package com.sprouts.appupdater
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.dylanc.activityresult.launcher.StartActivityLauncher
 import com.sprouts.appupdater.databinding.ActivityMainBinding
+import com.sprouts.modulewepay.WeChatPay
 import pub.devrel.easypermissions.EasyPermissions
 
 
@@ -40,6 +42,21 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
          * 测试升级安装
          */
         binding.update.setOnClickListener { v: View? ->
+
+            Log.d("TAG", "onCreate: " + WeChatPay(this).isPaySupported)
+
+//            WeChatPay(this).weChatPay(
+//                "wx36b2c130b322253f",
+//                "1900000109",
+//                "1101000000140415649af9fc314aa427",
+//                "1101000000140429eb40476f8896f4c9",
+//                "1398746574",
+//                "Sign=WXPay",
+//                "oR9d8PuhnIc+YZ8cBHFCwfgpaK9gd7vaRvkYD7rthRAZX+QBhcCYL21N7cHCTUxbQ+EAt6Uy+lwSN22f5YZvI45MLko8Pfso0jm46v5hqcVwrk6uddkGuT+Cdvu4WBqDzaDjnNa5UK3GfE1Wfl2gHxIIY5lLdUgWFts17D4WuolLLkiFZV+JSHMvH7eaLdT9N5GBovBwu5yYKUR7skR8Fu+LozcSqQixnlEZUfyE55feLOQTUYzLmR9pNtPbPsu6WVhbNHMS3Ss2+AehHvz+n64GDmXxbX++IOBvm2olHu3PsOUGRwhudhVf7UcGcunXt8cqNjKNqZLhLw4jqxDg==",
+//                ""
+//            )
+
+
             val data = CheckVersionResult(
                 apkDownLoadUrl,
                 1,

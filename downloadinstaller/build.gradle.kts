@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -45,13 +47,15 @@ android {
 }
 
 mavenPublishing {
-    coordinates("com.example.mylibrary", "mylibrary-runtime", "1.0.3-SNAPSHOT")
+
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    coordinates("io.github.sprouts-clark", "DownloadInstaller", "1.0.0")
 
     pom {
-        name.set("My Library")
-        description.set("A description of what my library does.")
-        inceptionYear.set("2020")
-        url.set("https://github.com/username/mylibrary/")
+        name.set("DownloadInstaller")
+        description.set("a library uesed for apps' upgrade")
+        inceptionYear.set("2025")
+        url.set("https://github.com/AnyLifeZLB/DownloadInstaller/tree/master")
         licenses {
             license {
                 name.set("The Apache License, Version 2.0")
@@ -61,17 +65,76 @@ mavenPublishing {
         }
         developers {
             developer {
-                id.set("username")
-                name.set("User Name")
-                url.set("https://github.com/username/")
+                id.set("sprouts-clark")
+                name.set("sprouts-clark")
+                url.set("https://github.com/sprouts-clark")
             }
         }
         scm {
-            url.set("https://github.com/username/mylibrary/")
-            connection.set("scm:git:git://github.com/username/mylibrary.git")
-            developerConnection.set("scm:git:ssh://git@github.com/username/mylibrary.git")
+            url.set("https://github.com/sprouts-clark/Downloadinstaller/")
+            connection.set("scm:git:git://github.com/sprouts-clark/Downloadinstaller.git")
+            developerConnection.set("scm:git:ssh://git@github.com/sprouts-clark/Downloadinstaller.git")
         }
     }
+}
+
+
+tasks.register<Javadoc>("androidJavadocs") {
+    // 注册生成 Javadoc 的任务
+    source = files(android.sourceSets["main"].java.srcDirs).asFileTree
+    // 将 Android 的引导类路径添加到 Javadoc 类路径中
+    classpath += files(android.bootClasspath.joinToString(File.pathSeparator))
+    // 遍历所有库变体
+    android.libraryVariants.all { variant ->
+        if (variant.name == "release") {
+            classpath += variant.javaCompileProvider.get().classpath
+        }
+        true
+    }
+    exclude("**/R.html", "**/R.*.html", "**/index.html")
+}
+
+
+//// 注册生成 Javadoc Jar 包的任务，依赖于 androidJavadocs 任务
+tasks.register<Jar>("androidJavadocsJar") {
+    dependsOn("androidJavadocs")
+    // 设置归档文件的分类器
+    archiveClassifier.set("javadoc")
+    //设置文档名称
+    archiveBaseName.set("DownloadInstaller-1.0.0")
+    // 使用 tasks.named 获取类型安全的 Javadoc 任务引用
+    from(tasks.named<Javadoc>("androidJavadocs").get().destinationDir)
+}
+
+// 注册生成源文件 Jar 包的任务
+tasks.register<Jar>("sourceJar") {
+    // 指定 Jar 包的内容来源为 main 源集的 Java 源文件目录
+    from(android.sourceSets["main"].java.srcDirs)
+    // 设置归档文件的分类器
+    archiveClassifier.set("sources")
+    archiveBaseName.set("DownloadInstaller-1.0.0")
+}
+
+tasks.register("generateJavadocSha1") {
+    val jarFile = File("$buildDir/libs/DownloadInstaller-1.0.0-javadoc.jar")
+    val sourceFile = File("$buildDir/libs/DownloadInstaller-1.0.0-sources.jar")
+    val aarFile = File("$buildDir/outputs/aar/downloadinstaller-release.aar")
+    val pomFile = File("$buildDir/publications/maven/pom-default.xml")
+
+    val listFile = arrayOf(jarFile, sourceFile, aarFile, pomFile)
+    for (file in listFile) {
+        if (file.exists()) {
+            val sha1 = org.apache.commons.codec.digest.DigestUtils.sha1Hex(file.readBytes())
+            val sha1File = File("${file.absolutePath}.sha1")
+            sha1File.writeText(sha1)
+            val md51 = org.apache.commons.codec.digest.DigestUtils.md5Hex(file.readBytes())
+            val md51File = File("${file.absolutePath}.md5")
+            md51File.writeText(md51)
+
+        }
+
+    }
+
 }
 
 dependencies {

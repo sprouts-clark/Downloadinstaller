@@ -36,6 +36,38 @@ android {
         viewBinding = true
         dataBinding = true
     }
+
+    // 配置签名信息
+    signingConfigs {
+        // 定义一个名为 "config" 的签名配置
+        create("config") {
+            // JKS 文件的路径，这里使用相对路径，可根据实际情况修改
+            storeFile = file("linkedlife.jks")
+            // JKS 文件的存储密码
+            storePassword = "linkedlife@link"
+            // 密钥的别名
+            keyAlias = "key0"
+            // 密钥的密码
+            keyPassword = "linkedlife@link"
+        }
+    }
+    // 配置构建类型
+    buildTypes {
+        // 配置 debug 构建类型
+        getByName("debug") {
+            // 开启调试模式
+            isDebuggable = true
+            // 设置签名配置
+            signingConfig = signingConfigs.getByName("config")
+        }
+        // 配置 release 构建类型
+        getByName("release") {
+            // 不开启调试模式
+            isDebuggable = false
+            // 设置签名配置
+            signingConfig = signingConfigs.getByName("config")
+        }
+    }
 }
 
 dependencies {
@@ -70,6 +102,7 @@ dependencies {
     implementation("com.github.DylanCaiCoding:ActivityResultLauncher:1.1.2")
     // 本地模块依赖
     implementation(project(":downloadinstaller"))
+    implementation(project(":modulewepay"))
     // 注释掉的依赖
     // implementation("io.github.anylifezlb:DownloadInstaller:2.2.2")
 }

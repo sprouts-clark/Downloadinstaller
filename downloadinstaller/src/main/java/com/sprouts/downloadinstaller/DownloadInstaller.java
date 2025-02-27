@@ -73,7 +73,10 @@ public class DownloadInstaller {
     //事件监听器
     private DownloadProgressCallBack downloadProgressCallBack;
 
-    //保存下载状态信息，临时过度的方案。
+    /**
+     * The constant downLoadStatusMap.
+     */
+//保存下载状态信息，临时过度的方案。
     public static ArrayMap<String, Integer> downLoadStatusMap = new ArrayMap<>();
 
     private String storagePrefix;
@@ -85,8 +88,9 @@ public class DownloadInstaller {
     /**
      * 不需要下载进度回调的
      *
-     * @param context        上下文
-     * @param downloadApkUrl apk 下载地址
+     * @param context               上下文
+     * @param downloadApkUrl        apk 下载地址
+     * @param startActivityLauncher the start activity launcher
      */
     public DownloadInstaller(Context context, String downloadApkUrl,StartActivityLauncher startActivityLauncher) {
         this(context, downloadApkUrl, startActivityLauncher,false, null);
@@ -96,9 +100,10 @@ public class DownloadInstaller {
     /**
      * 需要下载进度回调的
      *
-     * @param context        上下文
-     * @param downloadApkUrl apk下载地址
-     * @param callBack       进度状态回调
+     * @param context               上下文
+     * @param downloadApkUrl        apk下载地址
+     * @param startActivityLauncher the start activity launcher
+     * @param callBack              进度状态回调
      */
     public DownloadInstaller(Context context, String downloadApkUrl,StartActivityLauncher startActivityLauncher, DownloadProgressCallBack callBack) {
         this(context, downloadApkUrl, startActivityLauncher,false, callBack);
@@ -110,6 +115,7 @@ public class DownloadInstaller {
      *
      * @param context                  上下文
      * @param downloadApkUrl           下载URL
+     * @param startActivityLauncher    the start activity launcher
      * @param isForceGrantUnKnowSource 是否是强制的要授权未知来源
      * @param callBack                 回调
      */
@@ -332,7 +338,7 @@ public class DownloadInstaller {
      * get String from id
      *
      * @param id res id
-     * @return string
+     * @return string string from
      */
     @NonNull
     public String getStringFrom(@StringRes int id) {
@@ -353,9 +359,8 @@ public class DownloadInstaller {
 
     /**
      * 安装过程处理
-     *
+     * <p>
      * 取消安装未知来源后不可以用，Activity For Result 不可用
-     *
      */
     public void installProcess() {
         if (isDownloadOnly) return;
